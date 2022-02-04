@@ -1,4 +1,3 @@
-using Log;
 using Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +6,7 @@ using Serilog;
 using System;
 
 namespace Cronus.Monitor;
-public class Program
+public static class Program
 {
     public static void Main(string[] args)
     {

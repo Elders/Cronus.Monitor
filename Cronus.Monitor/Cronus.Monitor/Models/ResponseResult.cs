@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cronus.Monitor.Models
@@ -24,8 +25,6 @@ namespace Cronus.Monitor.Models
 
     public class ResponseResult<T> : ResponseResult
     {
-        public ResponseResult() { }
-
         public ResponseResult(T result)
         {
             Result = result;
@@ -36,9 +35,13 @@ namespace Cronus.Monitor.Models
         {
             Result = result;
         }
-        public ResponseResult(params string[] errors) : base(errors) { }
+        public ResponseResult(ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>> data, params string[] errors) : base(errors)
+        {
+            Data = data;
+        }
 
         public T Result { get; private set; }
+        public ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>> Data { get; }
     }
 
     public class BulkResponseResult<T> where T : ResponseResult

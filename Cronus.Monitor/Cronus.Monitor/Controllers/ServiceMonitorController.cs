@@ -18,7 +18,8 @@ namespace Cronus.Monitor.Controllers
         [HttpGet("Data")]
         public IActionResult GetMonitoringServicesAsync()
         {
-            return Ok(new ResponseResult<List<MonitorData>>(monitorContainer.Data));
+
+            return Ok(new ResponseResult<Queue<HeartbeatDto>>(monitorContainer.heartBeats));
         }
     }
 }
