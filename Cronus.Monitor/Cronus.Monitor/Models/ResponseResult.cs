@@ -35,13 +35,8 @@ namespace Cronus.Monitor.Models
         {
             Result = result;
         }
-        public ResponseResult(ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>> data, params string[] errors) : base(errors)
-        {
-            Data = data;
-        }
 
         public T Result { get; private set; }
-        public ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>> Data { get; }
     }
 
     public class BulkResponseResult<T> where T : ResponseResult
