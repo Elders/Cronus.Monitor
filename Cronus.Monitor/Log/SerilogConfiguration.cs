@@ -5,119 +5,118 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Logging
+namespace Logging;
+
+public static class SerilogConfiguration
 {
-    public static class SerilogConfiguration
+    private const string ApplicationNamePropertyName = "Application";
+
+    public static void Configure(HostBuilderContext context, LoggerConfiguration config)
     {
-        private const string ApplicationNamePropertyName = "Application";
+        var builder = new ConfigurationBuilder();
 
-        public static void Configure(HostBuilderContext context, LoggerConfiguration config)
+        if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
+            builder.SetBasePath(Directory.GetCurrentDirectory());
+
+        builder
+            .AddEnvironmentVariables()
+            .AddJsonFile($"serilog.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"serilog.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+        config
+            .MinimumLevel.Debug()
+            .ReadFrom.Configuration(builder.Build())
+            .Enrich.WithProperty(ApplicationNamePropertyName, context.HostingEnvironment.ApplicationName)
+            .Enrich.WithMachineName()
+            .Enrich.FromLogContext();
+    }
+}
+
+public static class Start
+{
+    private const string ApplicationNamePropertyName = "Application";
+
+    public static void WithStartupDiagnostics(string applicationName, Action programExecution)
+    {
+        var builder = new ConfigurationBuilder();
+        BuildConfiguration(builder);
+
+        Serilog.Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Build())
+            .Enrich.WithProperty(ApplicationNamePropertyName, applicationName)
+            .Enrich.WithMachineName()
+            .Enrich.FromLogContext()
+            .CreateLogger();
+
+        try
         {
-            var builder = new ConfigurationBuilder();
+            Serilog.Log.Information(new ServerInfo().ToString());
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
-                builder.SetBasePath(Directory.GetCurrentDirectory());
+            Serilog.Log.Information($"Starting {applicationName} host...");
 
-            builder
-                .AddEnvironmentVariables()
-                .AddJsonFile($"serilog.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"serilog.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+            programExecution();
 
-            config
-                .MinimumLevel.Debug()
-                .ReadFrom.Configuration(builder.Build())
-                .Enrich.WithProperty(ApplicationNamePropertyName, context.HostingEnvironment.ApplicationName)
-                .Enrich.WithMachineName()
-                .Enrich.FromLogContext();
+            Serilog.Log.Information($"Host {applicationName} has stopped gracefully!");
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Fatal(ex, $"{applicationName} host terminated unexpectedly!");
+        }
+        finally
+        {
+            Serilog.Log.CloseAndFlush();
         }
     }
 
-    public static class Start
+    static void BuildConfiguration(ConfigurationBuilder builder)
     {
-        private const string ApplicationNamePropertyName = "Application";
-
-        public static void WithStartupDiagnostics(string applicationName, Action programExecution)
+        if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
         {
-            var builder = new ConfigurationBuilder();
-            BuildConfiguration(builder);
+            builder.SetBasePath(Directory.GetCurrentDirectory());
+        };
 
-            Serilog.Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Build())
-                .Enrich.WithProperty(ApplicationNamePropertyName, applicationName)
-                .Enrich.WithMachineName()
-                .Enrich.FromLogContext()
-                .CreateLogger();
+        builder
+            .AddEnvironmentVariables()
+            .AddJsonFile("serilog.json", optional: false, reloadOnChange: true);
 
-            try
-            {
-                Serilog.Log.Information(new ServerInfo().ToString());
+        string environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT", EnvironmentVariableTarget.Process);
+        if (string.IsNullOrEmpty(environment) == false)
+        {
+            builder.AddJsonFile($"serilog.{environment}.json", optional: true);
+        }
+    }
 
-                Serilog.Log.Information($"Starting {applicationName} host...");
-
-                programExecution();
-
-                Serilog.Log.Information($"Host {applicationName} has stopped gracefully!");
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Fatal(ex, $"{applicationName} host terminated unexpectedly!");
-            }
-            finally
-            {
-                Serilog.Log.CloseAndFlush();
-            }
+    public class ServerInfo
+    {
+        public ServerInfo()
+        {
+            Environment = $"{System.Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT", EnvironmentVariableTarget.Process)} {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}";
+            LocalTime = DateTimeOffset.Now.ToString();
+            TimeZone = TimeZoneInfo.Local.ToSerializedString();
+            OS = $"{System.Runtime.InteropServices.RuntimeInformation.OSDescription} {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}";
+            Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
         }
 
-        static void BuildConfiguration(ConfigurationBuilder builder)
+        public string Environment { get; set; }
+
+        public string LocalTime { get; set; }
+
+        public string TimeZone { get; set; }
+
+        public string OS { get; set; }
+
+        public string Framework { get; set; }
+
+        public override string ToString()
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
-            {
-                builder.SetBasePath(Directory.GetCurrentDirectory());
-            };
+            StringBuilder buffer = new StringBuilder();
+            buffer.AppendLine($"Environment: {Environment}");
+            buffer.AppendLine($"OS: {OS}");
+            buffer.AppendLine($"Framework: {Framework}");
+            buffer.AppendLine($"LocalTime: {LocalTime}");
+            buffer.AppendLine($"TimeZone: {TimeZone}");
 
-            builder
-                .AddEnvironmentVariables()
-                .AddJsonFile("serilog.json", optional: false, reloadOnChange: true);
-
-            string environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT", EnvironmentVariableTarget.Process);
-            if (string.IsNullOrEmpty(environment) == false)
-            {
-                builder.AddJsonFile($"serilog.{environment}.json", optional: true);
-            }
-        }
-
-        public class ServerInfo
-        {
-            public ServerInfo()
-            {
-                Environment = $"{System.Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT", EnvironmentVariableTarget.Process)} {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}";
-                LocalTime = DateTimeOffset.Now.ToString();
-                TimeZone = TimeZoneInfo.Local.ToSerializedString();
-                OS = $"{System.Runtime.InteropServices.RuntimeInformation.OSDescription} {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}";
-                Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
-            }
-
-            public string Environment { get; set; }
-
-            public string LocalTime { get; set; }
-
-            public string TimeZone { get; set; }
-
-            public string OS { get; set; }
-
-            public string Framework { get; set; }
-
-            public override string ToString()
-            {
-                StringBuilder buffer = new StringBuilder();
-                buffer.AppendLine($"Environment: {Environment}");
-                buffer.AppendLine($"OS: {OS}");
-                buffer.AppendLine($"Framework: {Framework}");
-                buffer.AppendLine($"LocalTime: {LocalTime}");
-                buffer.AppendLine($"TimeZone: {TimeZone}");
-
-                return buffer.ToString();
-            }
+            return buffer.ToString();
         }
     }
 }

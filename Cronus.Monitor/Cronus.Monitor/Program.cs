@@ -6,6 +6,7 @@ using Serilog;
 using System;
 
 namespace Cronus.Monitor;
+
 public static class Program
 {
     public static void Main(string[] args)

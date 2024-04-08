@@ -1,23 +1,22 @@
 ﻿using System.Collections.Concurrent;
 
-namespace Cronus.Monitor
+namespace Cronus.Monitor;
+
+public sealed class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
 {
-    public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
+    public readonly int Limit;
+
+    public LimitedConcurrentQueue(int limit)
     {
-        public readonly int Limit;
+        Limit = limit;
+    }
 
-        public LimitedConcurrentQueue(int limit)
+    public new void Enqueue(T element)
+    {
+        base.Enqueue(element);
+        while (Count > Limit)
         {
-            Limit = limit;
-        }
-
-        public new void Enqueue(T element)
-        {
-            base.Enqueue(element);
-            if (Count > Limit)
-            {
-                TryDequeue(out T discard);
-            }
+            TryDequeue(out T discard);
         }
     }
 }
