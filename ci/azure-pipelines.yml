@@ -94,7 +94,7 @@ stages:
           definition: 'OneBigSplash.LifestylePlatform.Configuration'
           buildVersionToDownload: 'latest'
           artifactName: 'unicom.monitor'
-          downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.LifestylePlatform.Configuration/UniCom.Monitor/'
+          downloadPath: '$(System.DefaultWorkingDirectory)_OneBigSplash.LifestylePlatform.Configuration/UniCom.Monitor/src/UniCom.Monitor.configuration/public/'
 
 
       - task: DownloadBuildArtifacts@0
