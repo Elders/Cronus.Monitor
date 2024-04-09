@@ -17,8 +17,8 @@ module.exports={
               VER=\${nextRelease.version}
               ##vso[build.updatebuildnumber]\${nextRelease.version}
               docker login $CR -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-              docker build -f ci/Dockerfile.Service -t $CR/unicom.monitor.service:$VER $STAGING_PATH
-              docker push                              $CR/unicom.monitor.service:$VER
+              docker build -f ci/Dockerfile.Api -t $CR/unicom.monitor.api:$VER $STAGING_PATH
+              docker push                              $CR/unicom.monitor.api:$VER
           `,
           successCmd: `
               set -e
