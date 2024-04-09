@@ -105,7 +105,7 @@ stages:
           downloadPath: '$(System.DefaultWorkingDirectory)'
       - bash: |
           set -e
-          cd /_UniCom.Monitor/src/UniCom.Monitor.configuration/public
+          cd /_OneBigSplash.LifestylePlatform.Configuration/UniCom.Monitor/src/UniCom.Monitor.configuration/public
           tar -cvf ../../conf-d.tar .
       - task: Kubernetes@1
         inputs:
