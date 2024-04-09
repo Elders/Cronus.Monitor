@@ -91,7 +91,7 @@ stages:
         inputs:
           buildType: 'specific'
           project: 'UniCom'
-          definition: 'UniCom.Monitor/src/UniCom.Monitor.configuration/public'
+          definition: 'UniCom.Monitor'
           buildVersionToDownload: 'latest'
           artifactName: 'unicom.monitor'
           downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.LifestylePlatform.Configuration/UniCom.Monitor/src/UniCom.Monitor.configuration/public'
@@ -104,7 +104,9 @@ stages:
           artifactName: 'manifest'
           downloadPath: '$(System.DefaultWorkingDirectory)'
       - bash: |
-             cd $(System.DefaultWorkingDirectory)/_Vapt.Configuration/vapt/ && tar -cvf conf-d.tar .
+          set -e
+          cd /_UniCom.Monitor/src/UniCom.Monitor.configuration/public
+          tar -cvf ../../conf-d.tar .
       - task: Kubernetes@1
         inputs:
           kubernetesServiceEndpoint: 'integration-cluster'
