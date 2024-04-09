@@ -11,4 +11,5 @@ RUN apk add --no-cache icu-libs
 STOPSIGNAL SIGINT
 
 WORKDIR /api
-CMD ["dotnet", "UniCom.Monitor.Api.dll"]
+CMD ["dotnet", "UniCom.Monitor.Api.dll"] 
+ 
