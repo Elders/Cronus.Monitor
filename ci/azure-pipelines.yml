@@ -69,7 +69,7 @@ stages:
 
  - stage: Deploy
    displayName: Deploy Stage
-   condition:  and(succeeded(), eq(dependencies.Build.outputs['Build.Release.Released'], 'true'))
+  # condition:  and(succeeded(), eq(dependencies.Build.outputs['Build.Release.Released'], 'true'))
    jobs:
     - job: Deploy
       displayName: Deploy Job
@@ -94,9 +94,7 @@ stages:
           definition: 'UniCom.Monitor/src/UniCom.Monitor.configuration/public'
           buildVersionToDownload: 'latest'
           artifactName: 'unicom.monitor'
-          downloadPath: '$(System.DefaultWorkingDirectory)/_UniCom.Monitor/src/UniCom.Monitor.configuration/public'
-
-  
+          downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.LifestylePlatform.Configuration/UniCom.Monitor/src/UniCom.Monitor.configuration/public'
 
 
       - task: DownloadBuildArtifacts@0
@@ -106,9 +104,7 @@ stages:
           artifactName: 'manifest'
           downloadPath: '$(System.DefaultWorkingDirectory)'
       - bash: |
-          set -e
-          cd /_UniCom.Monitor/src/UniCom.Monitor.configuration/public
-          tar -cvf ../../conf-d.tar .
+             cd $(System.DefaultWorkingDirectory)/_Vapt.Configuration/vapt/ && tar -cvf conf-d.tar .
       - task: Kubernetes@1
         inputs:
           kubernetesServiceEndpoint: 'integration-cluster'
