@@ -112,7 +112,7 @@ stages:
           kubernetesServiceEndpoint: 'integration-cluster'
           namespace: unicom
           command: create
-          arguments: 'configmap unicom.monitor --from-file=conf-d.tar'
+          arguments: 'configmap unicom-monitor --from-file=conf-d.tar'
           forceUpdateConfigMap: true
           outputFormat: 'jsonpath-as-json={.metadata}'
            
