@@ -91,10 +91,10 @@ stages:
         inputs:
           buildType: 'specific'
           project: 'UniCom'
-          definition: 'OneBigSplash.LifestylePlatform.Configuration'
+          definition: 'OneBigSplash..Unicom.Monitor.Configuration'
           buildVersionToDownload: 'latest'
           artifactName: 'unicom.monitor'
-          downloadPath: '$(System.DefaultWorkingDirectory)_OneBigSplash.LifestylePlatform.Configuration/UniCom.Monitor/src/UniCom.Monitor.configuration/public/'
+          downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor'
 
 
       - task: DownloadBuildArtifacts@0
@@ -105,7 +105,7 @@ stages:
           downloadPath: '$(System.DefaultWorkingDirectory)'
       - bash: |
           set -e
-          cd $(System.DefaultWorkingDirectory)/_OneBigSplash.LifestylePlatform.Configuration/UniCom.Monitor/src/UniCom.Monitor.configuration/public/unicom.monitor
+          cd $(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor/unicom.monitor
           tar -cvf ../../conf-d.tar .
       - task: Kubernetes@1
         inputs:
