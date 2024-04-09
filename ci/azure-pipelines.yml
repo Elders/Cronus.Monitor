@@ -91,7 +91,7 @@ stages:
         inputs:
           buildType: 'specific'
           project: 'UniCom'
-          definition: 'OneBigSplash..Unicom.Monitor.Configuration'
+          definition: 'OneBigSplash.Unicom.Monitor.Configuration'
           buildVersionToDownload: 'latest'
           artifactName: 'unicom.monitor'
           downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor'
