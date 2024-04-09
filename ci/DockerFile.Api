@@ -1,0 +1,14 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
+
+COPY api /api
+
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+#RUN apk add --no-cache icu-libs tzdata
+#RUN apk add libgdiplus-dev fontconfig ttf-dejavu --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
+
+RUN apk add --no-cache icu-libs
+
+STOPSIGNAL SIGINT
+
+WORKDIR /api
+CMD ["dotnet", "UniCom.Monitor.Api.dll"]
