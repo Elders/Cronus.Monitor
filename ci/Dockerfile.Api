@@ -11,4 +11,4 @@ RUN apk add --no-cache icu-libs
 STOPSIGNAL SIGINT
 
 WORKDIR /api
-CMD ["dotnet", "Cronus.Monitor.dll"] 
+CMD ["dotnet", "Cronus.Monitor.Api.dll"] 
