@@ -122,7 +122,7 @@ stages:
           kubernetesServiceEndpoint: 'integration-cluster'
           namespace: unicom
           command: run
-          arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j UniCom.Monitor.Api.json -m pandora-job -a UniCom.Monitor.Api -c int -o consul -h http://consul.unicom.internal:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
+          arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j Cronus.Monitor.Api.json -m pandora-job -a Cronus.Monitor.Api -c int -o consul -h http://consul.unicom.internal:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
           versionSpec: 1.15.0     
       - task: Kubernetes@1
         displayName: 'kubectl wait'
