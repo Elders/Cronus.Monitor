@@ -1,13 +1,10 @@
 {
     "Serilog": {
-        "Properties": {
-            "Application": "UniCom.CommerceFunnel"
-        },
         "MinimumLevel": {
             // Verbose | Debug | Information | Warning | Error | Fatal
-            "Default": "Information",
+            "Default": "Debug",
             "Override": {
-                "Elders": "Information",
+                "Elders": "Debug",
                 "Microsoft": "Information",
                 "Microsoft.AspNetCore": "Warning",
                 "System": "Information"
@@ -30,6 +27,12 @@
                 "Args": {
                     "restrictedToMinimumLevel": "Verbose",
                     "telemetryConverter": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
+                }
+            },
+            {
+                "Name": "Console",
+                "Args": {
+                    "theme": "Log.EldersThemes::Epic, Log"
                 }
             }
         ],
