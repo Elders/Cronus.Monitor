@@ -1,3 +1,4 @@
+using Elders.Pandora;
 using Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ public static class Program
                 .ConfigureAppConfiguration((context, configApp) =>
                 {
                     configApp.AddEnvironmentVariables();
+                    configApp.Add(new PandoraConsulConfigurationSource(Environment.GetEnvironmentVariable("CONSUL_ADDRESS", EnvironmentVariableTarget.Process)));
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
