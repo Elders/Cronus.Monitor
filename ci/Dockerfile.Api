@@ -12,4 +12,3 @@ STOPSIGNAL SIGINT
 
 WORKDIR /api
 CMD ["dotnet", "UniCom.Monitor.Api.dll"] 
- 
