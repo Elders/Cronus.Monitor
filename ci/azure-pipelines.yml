@@ -130,7 +130,7 @@ stages:
           kubernetesServiceEndpoint: 'integration-cluster'
           namespace: unicom
           command: wait
-          arguments: '--timeout=300s --for=condition=complete job/pandora'
+          arguments: '--timeout=300s --for=condition=complete job/pandora-monitor'
       - task: Kubernetes@1
         displayName: 'kubectl delete pandora-monitor job'
         inputs:
