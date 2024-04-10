@@ -159,3 +159,6 @@ stages:
           ### parameters are :
           ### conteiner_registry  namespace  deployment  container1 image1 container2 image2 ...
           bash $(System.DefaultWorkingDirectory)/_edo/edo/azure-devops/release-pipeline-set-image.v1.sh unicominternal.azurecr.io unicom unicom-monitor unicom-monitor unicom.monitor.api
+
+
+          
