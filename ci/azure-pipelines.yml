@@ -84,9 +84,6 @@ stages:
       pool:
         vmImage: 'ubuntu-22.04'
       steps:
-
-    
-
       - task: DownloadBuildArtifacts@0
         inputs:
           buildType: 'specific'
@@ -95,14 +92,6 @@ stages:
           buildVersionToDownload: 'latest'
           artifactName: 'edo'
           downloadPath: '$(System.DefaultWorkingDirectory)/_edo'
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          buildType: 'specific'
-          project: 'UniCom'
-          definition: 'OneBigSplash.Unicom.Monitor.Configuration'
-          buildVersionToDownload: 'latest'
-          artifactName: 'cronus.monitor'
-          downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor'
 
 
       - task: DownloadBuildArtifacts@0
@@ -111,49 +100,6 @@ stages:
           buildVersionToDownload: 'latest'
           artifactName: 'manifest'
           downloadPath: '$(System.DefaultWorkingDirectory)'
-      - bash: |
-          set -e
-          cd $(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor/unicom.monitor
-          tar -cvf ../../conf-d.tar .
-      - task: Kubernetes@1
-        inputs:
-          kubernetesServiceEndpoint: 'integration-cluster'
-          namespace: unicom
-          command: create
-          arguments: 'configmap unicom-monitor --from-file=conf-d.tar'
-          forceUpdateConfigMap: true
-          outputFormat: 'jsonpath-as-json={.metadata}'
-           
-      - task: Kubernetes@1
-        displayName: 'kubectl run Pandora Job'
-        inputs:
-          kubernetesServiceEndpoint: 'integration-cluster'
-          namespace: unicom
-          command: run
-          arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j unicom.monitor.api.json -m pandora-job -a Unicom.Monitor.Api -c int -o consul -h http://consul.unicom.internal:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
-          versionSpec: 1.15.0     
-      - task: Kubernetes@1
-        displayName: 'kubectl wait'
-        inputs:
-          kubernetesServiceEndpoint: 'integration-cluster'
-          namespace: unicom
-          command: wait
-          arguments: '--timeout=300s --for=condition=complete job/pandora'
-      - task: Kubernetes@1
-        displayName: 'kubectl delete pandora job'
-        inputs:
-          kubernetesServiceEndpoint: 'integration-cluster'
-          namespace: unicom
-          command: delete
-          arguments: 'job pandora'          
-      - task: Kubernetes@1
-        displayName: 'kubectl delete ConfigMap'
-        inputs:
-          kubernetesServiceEndpoint: 'integration-cluster'
-          namespace: unicom
-          command: delete
-          arguments: 'configmap unicom-monitor'          
-          azureContainerRegistry: 
       - task: Kubernetes@1
         name: _CONF
         inputs:
