@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Cronus.Monitor;
 
 public class MonitorContainer
 {
-    public ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>> heartBeats { get; private set; }
+    public ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>> HeartBeats { get; private set; }
 
     public MonitorContainer()
     {
-        heartBeats = new ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>>();
+        HeartBeats = new ConcurrentDictionary<string, LimitedConcurrentQueue<HeartbeatDto>>();
     }
 
     public void Add(HeartbeatDto heartbeatDto)
@@ -17,11 +19,11 @@ public class MonitorContainer
         try
         {
             LimitedConcurrentQueue<HeartbeatDto> queue;
-            if (heartBeats.TryGetValue(heartbeatDto.Id, out queue) == false)
+            if (HeartBeats.TryGetValue(heartbeatDto.Id, out queue) == false)
             {
                 queue = new LimitedConcurrentQueue<HeartbeatDto>(2);
                 queue.Enqueue(heartbeatDto);
-                heartBeats.TryAdd(heartbeatDto.Id, queue);
+                HeartBeats.TryAdd(heartbeatDto.Id, queue);
             }
             queue.Enqueue(heartbeatDto);
         }
@@ -29,6 +31,11 @@ public class MonitorContainer
         {
             throw;
         }
+    }
+
+    public IEnumerable<string> GetMonitoredServices()
+    {
+        return HeartBeats.Keys;
     }
 }
 
