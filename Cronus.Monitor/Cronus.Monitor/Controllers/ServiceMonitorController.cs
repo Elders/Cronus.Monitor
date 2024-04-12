@@ -5,6 +5,7 @@ using static Cronus.Monitor.CronusMonitoringProjection;
 using System.Linq;
 using System.Collections.Concurrent;
 using System;
+using System.Collections;
 
 namespace Cronus.Monitor.Controllers;
 
@@ -51,21 +52,7 @@ public class ServiceMonitorController : ControllerBase
     [HttpGet("Status")]
     public IActionResult GetStatusAsync()
     {
-        List<ServiceStatus> result = new List<ServiceStatus>();
-        foreach (var service in monitorContainer.GetMonitoredServices())
-        {
-            var status = new ServiceStatus
-            {
-                BoundedContext = service,
-                Name = service,
-                Description = "description",
-                Status = GetServiceStatus(service)
-            };
-
-            result.Add(status);
-        }
-
-        return Ok(result);
+        return Ok(monitorContainer.GetAllServiceStatus());
     }
 
     private string GetServiceStatus(string service)
@@ -82,12 +69,49 @@ public class ServiceMonitorController : ControllerBase
 
 public class ServiceStatus
 {
+    private ushort totalNodes = 0;
+    private ushort operationalNodes = 0;
+
     public string BoundedContext { get; set; }
 
     public string Name { get; set; }
 
-    public string Description { get; set; }
+    public string Description { get; private set; }
 
-    public string Status { get; set; } // operational, down
+    public string Status { get; private set; }
+
+    public void ReportNodeOperational()
+    {
+        totalNodes++;
+        operationalNodes++;
+
+        CalculateStatus();
+    }
+
+    public void ReportNodeDown()
+    {
+        totalNodes++;
+
+        CalculateStatus();
+    }
+
+    private void CalculateStatus()
+    {
+        if (totalNodes == operationalNodes && totalNodes > 0)
+        {
+            Status = "Operational";
+            Description = $"{operationalNodes}/{totalNodes} nodes operational";
+        }
+        else if (totalNodes != operationalNodes && totalNodes > 0)
+        {
+            Status = "PartiallyDegraded";
+            Description = $"{operationalNodes}/{totalNodes} nodes operational";
+        }
+        else
+        {
+            Status = "Down";
+            Description = $"{operationalNodes}/{totalNodes} nodes operational";
+        }
+    }
 }
 
