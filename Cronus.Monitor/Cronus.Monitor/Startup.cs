@@ -1,9 +1,7 @@
 ﻿using Cronus.Monitor.Api;
 using Elders.Cronus;
-using Elders.Cronus.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Cronus.Monitor;
-
 
 public class Startup
 {
@@ -31,12 +28,9 @@ public class Startup
 
         services.AddControllers();
 
-        services.AddAuthentication();
-
         services.AddCronus(Configuration);
-
-        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<MonitorContainer>();
+
         services.AddHostedService<Worker>();
     }
 
@@ -54,8 +48,6 @@ public class Startup
 
         app.UseRouting();
 
-        app.UseAuthorization();
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -64,7 +56,7 @@ public class Startup
     }
 }
 
-public static class CorsExtensions
+internal static class CorsExtensions
 {
     public static IApplicationBuilder ConfigureCors(this IApplicationBuilder app)
     {
@@ -85,7 +77,6 @@ public static class CorsExtensions
 
         return app;
     }
-
 
     private static string[] GetArrayConfiguration(IConfiguration configuration, string parameter)
     {
