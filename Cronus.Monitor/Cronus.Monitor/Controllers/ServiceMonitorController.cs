@@ -54,17 +54,6 @@ public class ServiceMonitorController : ControllerBase
     {
         return Ok(monitorContainer.GetAllServiceStatus());
     }
-
-    private string GetServiceStatus(string service)
-    {
-        bool hasHeartbeats = false;
-        if (monitorContainer.HeartBeats.TryGetValue(service, out LimitedConcurrentQueue<HeartbeatDto> data))
-        {
-            hasHeartbeats = data.Where(x => x.Timestamp > DateTimeOffset.UtcNow.AddMinutes(-1)).Any();
-        }
-
-        return hasHeartbeats ? "operational" : "down";
-    }
 }
 
 public class ServiceStatus
