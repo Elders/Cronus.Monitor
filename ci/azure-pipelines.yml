@@ -101,7 +101,7 @@ stages:
           project: 'UniCom'
           definition: 'OneBigSplash.Unicom.Monitor.Configuration'
           buildVersionToDownload: 'latest'
-          artifactName: 'unicom.monitor'
+          artifactName: 'cronus.monitor'
           downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor'
 
 
