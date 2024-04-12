@@ -1,33 +1,33 @@
 {
     "Serilog": {
-    "MinimumLevel": {
-    // Verbose | Debug | Information | Warning | Error | Fatal
-    "Default": "Debug",
-    "Override": {
-    "Elders": "Information",
-    "Elders.Cronus": "Debug",
-    "Microsoft": "Debug",
-    "Microsoft.AspNetCore": "Debug",
-    "System": "Debug"
+        "MinimumLevel": {
+            // Verbose | Debug | Information | Warning | Error | Fatal
+            "Default": "Debug",
+            "Override": {
+                "Elders": "Information",
+                "Elders.Cronus": "Debug",
+                "Microsoft": "Debug",
+                "Microsoft.AspNetCore": "Debug",
+                "System": "Debug"
+            }
+        },
+        "WriteTo": [
+            {
+                // https://github.com/serilog/serilog-sinks-elasticsearch#json-appsettingsjson-configuration
+                "Name": "Elasticsearch",
+                "Args": {
+                    "nodeUris": "%log_server%",
+                    "autoRegisterTemplate": true,
+                    "autoRegisterTemplateVersion": "ESv7",
+                    "indexFormat": "int-log-%log_name%-{0:yyyyMMdd}"
+                }
+            },
+            {
+                "Name": "Console",
+                "Args": {
+                    "theme": "Log.EldersThemes::Epic, Log"
+                }
+            }
+        ]
     }
-    },
-    "WriteTo": [
-    {
-    // https://github.com/serilog/serilog-sinks-elasticsearch#json-appsettingsjson-configuration
-    "Name": "Elasticsearch",
-    "Args": {
-    "nodeUris": "%log_server%",
-    "autoRegisterTemplate": true,
-    "autoRegisterTemplateVersion": "ESv7",
-    "indexFormat": "int-log-%log_name%-{0:yyyyMMdd}"
-    }
-    },
-    {
-    "Name": "Console",
-    "Args": {
-    "theme": "Log.EldersThemes::Epic, Log"
-    }
-    }
-    ]
-    }
-    }
+}
