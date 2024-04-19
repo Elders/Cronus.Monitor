@@ -6,12 +6,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Cronus" Version="10.10.0" />
+		<PackageReference Include="Cronus" Version="10.10.2" />
 		<PackageReference Include="Cronus.AspNetCore" Version="10.2.1" />
 		<PackageReference Include="Cronus.Serialization.NewtonsoftJson" Version="10.4.0" />
-		<PackageReference Include="Cronus.Transport.RabbitMQ" Version="10.6.2" />
+		<PackageReference Include="Cronus.Transport.RabbitMQ" Version="10.7.1" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 		<PackageReference Include="Pandora.Consul" Version="3.3.0" />
 	</ItemGroup>
