@@ -241,14 +241,6 @@ stages:
                 arguments: 'configmap unicom-monitor'          
                 azureContainerRegistry: 
             - task: Kubernetes@1
-              name: _CONF
-              inputs:
-                kubernetesServiceEndpoint: 'pruvit-prd'
-                namespace: unicom
-                command: config
-                arguments: 'view --raw -v6'
-                versionSpec: '1.24.2'          
-            - task: Kubernetes@1
               inputs:
                 connectionType: 'Kubernetes Service Connection'
                 kubernetesServiceEndpoint: 'pruvit-prd'
