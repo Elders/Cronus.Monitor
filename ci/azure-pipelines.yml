@@ -32,11 +32,11 @@ stages:
           persistCredentials: true
 
         - task: UseDotNet@2
-          displayName: 'Use .NET 8 Core sdk'
+          displayName: 'Use .NET 9 Core sdk'
           enabled: false
           inputs:
             packageType: sdk
-            version: 8.0.x
+            version: 9.0.x
             installationPath: $(Agent.ToolsDirectory)/dotnet
 
         - task: DotNetCoreCLI@2
