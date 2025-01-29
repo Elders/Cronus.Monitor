@@ -27,7 +27,10 @@ public class MonitorContainer
                 queue.Enqueue(heartbeatDto);
                 HeartBeats.TryAdd(heartbeatDto.Id, queue);
             }
-            queue.Enqueue(heartbeatDto);
+            else
+            {
+                queue.Enqueue(heartbeatDto);
+            }
         }
         catch (Exception)
         {
