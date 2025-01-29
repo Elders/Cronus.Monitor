@@ -33,7 +33,7 @@ stages:
 
         - task: UseDotNet@2
           displayName: 'Use .NET 9 Core sdk'
-          enabled: false
+          enabled: true
           inputs:
             packageType: sdk
             version: 9.0.x
