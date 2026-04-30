@@ -24,7 +24,10 @@ stages:
         vmImage: 'ubuntu-latest'
 
       variables:
-        buildConfiguration: 'Release'
+        - name: buildConfiguration
+          value: 'Release'
+        - name: PROJECT_DIR
+          value: 'Cronus.Monitor.Api'
 
       steps:
         - checkout: self
